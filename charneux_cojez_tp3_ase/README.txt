@@ -1,10 +1,10 @@
 CHARNEUX Dimitri
 COJEZ Arnaud
 
-TP2 ASE - Ping Pong (Pang)
+TP3 ASE - Ping Pong (Pang)
 
 
 Usage :
       "$ make all" pour créer les executables
-      "$ ./pingpong" pour lancer le Ping Pong (2 contextes)
-      "$ ./pingpongpang" pour lancer le Ping Pong Pang (3 contextes)
+      "$ ./pingpong" pour lancer le Ping Pong (2 contextes finis)
+      "$ ./pingpongpang" pour lancer le Ping Pong Pang (3 contextes dont 2 infinis)

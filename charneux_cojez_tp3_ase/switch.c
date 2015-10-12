@@ -12,35 +12,50 @@ void init_ctx(struct ctx_s* ctx, int stack_size, func_t* f, void* args) {
 
 void switch_to_ctx (struct ctx_s* ctx) {
   assert(ctx->ctx_magic == CTX_MAGIC);
+  irq_disable();
   while(ctx->ctx_state == CTX_END){
-    if(current_ctx == ctx)
+    if(current_ctx == ctx){
+      asm("movl %0, %%esp" "\n" "movl %1, %%ebp"
+      :
+      : "r"(main_ctx->ctx_esp), "r"(main_ctx->ctx_ebp)
+      :);
       return;
-    else {
+    } else {
       free(ctx->ctx_base);
       current_ctx -> ctx_next = ctx->ctx_next;
       free(ctx);
       ctx = current_ctx->ctx_next;
     }
   }
+  irq_enable();
 
   if(current_ctx)
     asm("movl %%esp, %0" "\n" "movl %%ebp, %1"
 	: "=r"(current_ctx->ctx_esp), "=r"(current_ctx->ctx_ebp)
 	:
 	:);
-
-  
+  else {
+    main_ctx = malloc(sizeof(struct ctx_s));
+    asm("movl %%esp, %0" "\n" "movl %%ebp, %1"
+	: "=r"(main_ctx->ctx_esp), "=r"(main_ctx->ctx_ebp)
+	:
+	:);
+  }
+	
+  irq_disable();
   current_ctx = ctx;
 
   asm("movl %0, %%esp" "\n" "movl %1, %%ebp"
       :
       : "r"(current_ctx->ctx_esp), "r"(current_ctx->ctx_ebp)
       :);
+  irq_enable();
   if(current_ctx->ctx_state == CTX_INIT)
     start_current_ctx();
 }
 
-void yield(){
+static void yield(){
+
   if(current_ctx)
     switch_to_ctx(current_ctx->ctx_next);
   else if(ring_ctx)
@@ -59,6 +74,11 @@ void create_ctx(int stack_size, func_t* f, void* args){
     new->ctx_next = new;
     ring_ctx = new;
   }
+}
+
+void start_sched(){
+  setup_irq(TIMER_IRQ, yield);
+  start_hw();
 }
 
 

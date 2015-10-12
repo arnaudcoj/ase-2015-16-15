@@ -14,41 +14,35 @@ int main(void){
 	create_ctx(16384, f_ping, NULL);
 	create_ctx(16384, f_pong, NULL);
 	create_ctx(16384, f_pang, NULL);
-        yield();
+	start_sched();
+	// le sleep sert a attendre 1 seconde, dans le cas contraire, l'application fini trop vite pour pouvoir réaliser le ping pong
+	sleep(1000);
 
+	printf("\ntest retour au main\n");
 	exit(EXIT_SUCCESS);
 }
 
 void f_ping(void * args){
-	int i = 100;	
+	int i = 10000;	
 	while(i--) {
 		printf("A");
-		yield();
 		printf("B");
-		yield();
 		printf("C");
-		yield();
 	}
 }
 
 void f_pong(void * args){
 	while(1) {
 		printf("1");
-		yield();
 		printf("2");
-		yield();
 	}
 }
 
 void f_pang(void * args){
 	while(1) {
 		printf("6");
-		yield();
 		printf("7");
-		yield();
 		printf("8");
-		yield();
 		printf("9");
-		yield();
 	}
 }

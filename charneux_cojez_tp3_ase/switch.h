@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "hw.h"
 
 #define CTX_MAGIC 0x2B00B1E5
 
@@ -24,11 +25,13 @@ struct ctx_s {
 
 static struct ctx_s* current_ctx = (struct ctx_s *) 0;
 static struct ctx_s* ring_ctx = (struct ctx_s *) 0;
+static struct ctx_s* main_ctx = (struct ctx_s *) 0;
 
 static void init_ctx(struct ctx_s* ctx, int stack_size, func_t* f, void* args);
 static void switch_to_ctx (struct ctx_s* ctx);
 static void start_current_ctx (void);
-void yield();
+static void yield();
 void create_ctx(int stack_size, func_t* f, void* args);
+void start_sched();
 
 #endif //SWITCH_H
