@@ -12,4 +12,4 @@ prod_cons: $(OBJ) prod_cons.c
 	$(CC) $(CFLAGS) -c $^
 
 clean:
-	rm -rf *~ *.o $(EXEC)
+	rm -rf *~ *.o *# $(EXEC)
