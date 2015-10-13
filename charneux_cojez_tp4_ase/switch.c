@@ -120,7 +120,7 @@ void sem_up(struct sem_s * sem){
     c->ctx_state = CTX_EXEC;
     sem -> sem_first_ctx = c -> ctx_next_same_sem;
   }
-  irq_disable();
+  irq_enable();
 }
 
 

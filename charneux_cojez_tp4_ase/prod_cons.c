@@ -1,5 +1,5 @@
 #include "switch.h"
-#define N 15                       /* nombre de places dans le tampon */
+#define N 1                       /* nombre de places dans le tampon */
 
 struct sem_s mutex, vide, plein;
 int cpt_produit = 0, cpt_utilise = 0;
@@ -24,7 +24,7 @@ return EXIT_SUCCESS;
 void producteur (void * args)
 {
   int i = 100;
-  while (i--) {
+  while (i) {
     sem_down(&vide);                  /* dec. nb places libres */
     sem_down(&mutex);                 /* entree en section critique */
    // mettre_objet();              /* mettre l'objet dans le tampon */
