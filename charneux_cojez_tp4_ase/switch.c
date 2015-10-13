@@ -83,6 +83,7 @@ void create_ctx(int stack_size, func_t* f, void* args){
 void start_sched(){
   setup_irq(TIMER_IRQ, yield);
   start_hw();
+  yield();
 }
 
 
@@ -96,14 +97,14 @@ static void start_current_ctx (void) {
 
 void sem_init(struct sem_s * sem, unsigned int val){
   sem -> sem_cpt = val;
-  sem -> sem_fist_ctx = NULL;
+  sem -> sem_first_ctx = NULL;
 }
 void sem_down(struct sem_s * sem){
   irq_disable();
   sem -> sem_cpt --;
   if(sem -> sem_cpt < 0){
     current_ctx -> ctx_state = CTX_BLQ;
-    current_ctx -> ctx_next_sam_sem = sem -> sem_fist_ctx;
+    current_ctx -> ctx_next_same_sem = sem -> sem_first_ctx;
     sem -> sem_first_ctx = current_ctx;
     irq_enable();
     yield();
@@ -114,9 +115,9 @@ void sem_down(struct sem_s * sem){
 void sem_up(struct sem_s * sem){
   irq_disable();
   sem->sem_cpt ++;
-  if(sem -> sem_cpt <= 0) {
+  if(sem -> sem_cpt <= 0){
     struct ctx_s *c = sem->sem_first_ctx;
-    c->ctx_state = CTX_EXQ;
+    c->ctx_state = CTX_EXEC;
     sem -> sem_first_ctx = c -> ctx_next_same_sem;
   }
   irq_disable();

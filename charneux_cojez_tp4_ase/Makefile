@@ -5,8 +5,8 @@ OBJ=switch.o hw.o
 
 all: $(EXEC)
 
-%: $(OBJ) %.c  
-	$(CC) $(CFLAGS) -o $@  $^
+prod_cons: $(OBJ) prod_cons.c  
+	$(CC) $(CFLAGS) -o $@ $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $^
