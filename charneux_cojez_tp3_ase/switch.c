@@ -79,6 +79,7 @@ void create_ctx(int stack_size, func_t* f, void* args){
 void start_sched(){
   setup_irq(TIMER_IRQ, yield);
   start_hw();
+  yield();
 }
 
 
