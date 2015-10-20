@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "hardware.h"
+#include "config_hardware.h"
+#define SECTORSIZE 1024
 
 static void
 empty_it()
@@ -20,14 +22,15 @@ empty_it()
     return;
 }
 
+
+
 int
 main(int argc, char **argv)
 {
-    unsigned int i;
-    
-    /* init hardware */
-    if(init_hardware("hardware.ini") == 0) {
-	fprintf(stderr, "Error in hardware initialization\n");
+  unsigned int i;
+  /* init hardware */
+  if(init_hardware("hardware.ini") == 0) {
+      fprintf(stderr, "Error in hardware initialization\n");
 	exit(EXIT_FAILURE);
     }
 
@@ -41,3 +44,4 @@ main(int argc, char **argv)
     /* and exit! */
     exit(EXIT_SUCCESS);
 }
+
