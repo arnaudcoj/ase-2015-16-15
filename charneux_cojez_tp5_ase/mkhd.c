@@ -13,10 +13,11 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <stdio.h>
 #include "config_hardware.h"
 #include "hardware.h"
-#define SECTORSIZE 1024
+#define SECTORSIZE 256
 
 unsigned int c, s;
 
@@ -70,15 +71,17 @@ void dmps(){
   _out(HDA_DATAREGS, 1);
   _out(HDA_CMDREG, CMD_READ);
   _sleep(HDA_IRQ);
+  dump(MASTERBUFFER, SECTORSIZE, 1, 1);
+  
 }
 
 void dummy(){}
 
-int chk_hda(){
+void chk_hda(){
   int sectorsize;
   _out(HDA_CMDREG, CMD_DSKINFO);
-  sectorsize = _in(HDA_SECTORSIZE);
-  return SECTORSIZE == sectorsize;
+  sectorsize = (_in(HDA_DATAREGS +4) << 8) +  _in(HDA_DATAREGS +5);
+  assert( SECTORSIZE == sectorsize);
 }
 
 int main(int argc, char **argv){
@@ -96,9 +99,7 @@ int main(int argc, char **argv){
 
   /* Allows all IT */
   _mask(1);
-  if(!chk_hda())
-    exit(EXIT_FAILURE);
-
+  chk_hda();
   dmps();
   
   /* and exit! */
