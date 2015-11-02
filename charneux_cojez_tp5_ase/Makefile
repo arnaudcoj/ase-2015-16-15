@@ -1,11 +1,11 @@
 # $Id: Makefile,v 1.2 2004/10/12 09:06:17 marquet Exp $
 ##############################################################################
 
-ROOTDIR=/home/enseign/ASE
+ROOTDIR=.
 
 CC	= gcc
 CFLAGS	= -Wall -ansi -pedantic -m32
-CFLAGS  += -g
+CFLAGS  += -g -pthread
 LIBDIR  = $(ROOTDIR)/lib
 INCDIR  = -I$(ROOTDIR)/include
 LIBS    = -L$(LIBDIR) -lhardware
