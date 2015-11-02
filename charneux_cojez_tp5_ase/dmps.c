@@ -1,15 +1,3 @@
-/* ------------------------------
-   $Id: mkhd.c,v 1.4 2004/10/12 09:16:57 marquet Exp $
-   ------------------------------------------------------------
-
-   Create and intialize a drive using the hardware simulator.
-   Philippe Marquet, october 2002
-
-   A minimal example of a program using the ATA interface.
-   It is given to the students as such.
-   
-*/
-
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -68,7 +56,7 @@ void dmps(){
   _out(HDA_CMDREG, CMD_SEEK);
   _sleep(HDA_IRQ);
   _out(HDA_DATAREGS, 0);
-  _out(HDA_DATAREGS, 1);
+  _out(HDA_DATAREGS+1, 1);
   _out(HDA_CMDREG, CMD_READ);
   _sleep(HDA_IRQ);
   dump(MASTERBUFFER, SECTORSIZE, 1, 1);
@@ -80,6 +68,8 @@ void dummy(){}
 int main(int argc, char **argv){
   unsigned int i;
   unsigned char boeuf[SECTORSIZE];
+  unsigned int c, s;
+  c = s = 0;
   
   /* init hardware */
   if(init_hardware("hardware.ini") == 0) {
@@ -95,7 +85,16 @@ int main(int argc, char **argv){
   _mask(1);
   chk_hda();
 
-  read_sector(0,0,boeuf);
+  /* Processing parameters */
+  if(argc == 3) {
+    c = atoi(argv[1]);
+    s = atoi(argv[2]);
+  } else {
+    printf("no parameter given, assuming cylinder 0 & sector 0\n");
+  }
+
+  read_sector(c,s,boeuf);
+  
   dump(boeuf, SECTORSIZE, 1, 1);
   /* and exit! */
   exit(EXIT_SUCCESS);
