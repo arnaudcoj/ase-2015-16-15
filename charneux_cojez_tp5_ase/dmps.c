@@ -17,9 +17,7 @@
 #include <stdio.h>
 #include "config_hardware.h"
 #include "hardware.h"
-#define SECTORSIZE 256
-
-unsigned int c, s;
+#include "drive.h"
 
 void dump(unsigned char *buffer, unsigned int buffer_size, int ascii_dump, int octal_dump){
     int i,j;
@@ -61,6 +59,8 @@ static void empty_it(){
 }
 
 void dmps(){
+  unsigned int c, s;
+  c = s = 0;
   _out(HDA_DATAREGS, (c>>8) & 0xFF);
   _out(HDA_DATAREGS +1, c & 0xFF);
   _out(HDA_DATAREGS +2, (s>>8) & 0xFF);
@@ -77,16 +77,10 @@ void dmps(){
 
 void dummy(){}
 
-void chk_hda(){
-  int sectorsize;
-  _out(HDA_CMDREG, CMD_DSKINFO);
-  sectorsize = (_in(HDA_DATAREGS +4) << 8) +  _in(HDA_DATAREGS +5);
-  assert( SECTORSIZE == sectorsize);
-}
-
 int main(int argc, char **argv){
   unsigned int i;
-    
+  unsigned char boeuf[SECTORSIZE];
+  
   /* init hardware */
   if(init_hardware("hardware.ini") == 0) {
     fprintf(stderr, "Error in hardware initialization\n");
@@ -100,7 +94,9 @@ int main(int argc, char **argv){
   /* Allows all IT */
   _mask(1);
   chk_hda();
-  
+
+  read_sector(0,0,boeuf);
+  dump(boeuf, SECTORSIZE, 1, 1);
   /* and exit! */
   exit(EXIT_SUCCESS);
 }
