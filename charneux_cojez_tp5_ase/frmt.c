@@ -11,29 +11,22 @@ static void empty_it(){
   return;
 }
 
-void frmt(){
+void frmt(void){
+  
+  unsigned int ncyl, nsect, i;
+  ncyl = nsect = 0;
+  _out(HDA_CMDREG, CMD_DSKINFO);
+  ncyl = (_in(HDA_DATAREGS) << 8) +  _in(HDA_DATAREGS +1);
+  nsect = (_in(HDA_DATAREGS + 2) << 8) +  _in(HDA_DATAREGS +3);
 
-  unsigned int c, s;
-  c = s = 0;
-  _out(HDA_DATAREGS, (c>>8) & 0xFF);
-  _out(HDA_DATAREGS +1, c & 0xFF);
-  _out(HDA_DATAREGS +2, (s>>8) & 0xFF);
-  _out(HDA_DATAREGS +3, s & 0xFF);
-  _out(HDA_CMDREG, CMD_SEEK);
-  _sleep(HDA_IRQ);
-  _out(HDA_DATAREGS, 0);
-  _out(HDA_DATAREGS, 1);
-  _out(HDA_CMDREG, CMD_READ);
-  _sleep(HDA_IRQ);
+  for(i = 0; i < ncyl; i++)
+    format_sector(i, 0, nsect, 0);
 }
 
 void dummy(){}
 
 int main(int argc, char **argv){
   unsigned int i;
-  unsigned int c, s, l, v;
-  c = s = v = 0;
-  l = 1;
   
   /* init hardware */
   if(init_hardware("hardware.ini") == 0) {
@@ -49,21 +42,8 @@ int main(int argc, char **argv){
   _mask(1);
   chk_hda();
 
-  /* Processing parameters */
-  switch(argc) {
-  case 5:
-    v = atoi(argv[4]);
-  case 4:
-    l = atoi(argv[3]);
-  case 2:
-    c = atoi(argv[1]);
-    s = atoi(argv[2]);
-    break;
-  default:
-    printf("no parameters given, assuming cylinder 0, sector 0, length 1, value 0\n");
-  }
-  
-  format_sector(c, s, l, v);
+  /*  frmt();*/
+  format_sector(1,0,6,0xBB);
   
   /* and exit! */
   exit(EXIT_SUCCESS);
