@@ -42,8 +42,8 @@ int main(int argc, char **argv){
   _mask(1);
   chk_hda();
 
-  /*  frmt();*/
-  format_sector(1,0,6,0xBB);
+  frmt();
+ /* format_sector(1,0,6,0xBB);*/
   
   /* and exit! */
   exit(EXIT_SUCCESS);

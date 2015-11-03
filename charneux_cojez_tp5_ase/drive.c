@@ -22,21 +22,24 @@ void write_sector(unsigned int cylinder, unsigned int sector, const unsigned cha
 }
 
 void format_sector(unsigned int cylinder, unsigned int sector, unsigned int nsector, unsigned int value) {
-  _out(HDA_DATAREGS, (cylinder>>8) & 0xFF);
-  _out(HDA_DATAREGS +1, cylinder & 0xFF);
-  _out(HDA_DATAREGS +2, (sector>>8) & 0xFF);
-  _out(HDA_DATAREGS +3, sector & 0xFF);
-  _out(HDA_CMDREG, CMD_SEEK);
-  _sleep(HDA_IRQ);
-  _out(HDA_DATAREGS, (nsector>>8) & 0xFF);
-  _out(HDA_DATAREGS +1, nsector & 0xFF);
-  _out(HDA_DATAREGS +2, (value>>24) & 0xFF);
-  _out(HDA_DATAREGS +3, (value>>16) & 0xFF);
-  _out(HDA_DATAREGS +4, (value>>8) & 0xFF);
-  _out(HDA_DATAREGS +5, value & 0xFF);
-  _out(HDA_CMDREG, CMD_FORMAT);
-  _sleep(HDA_IRQ);
-  
+  int i, n = 1;
+  for(i=sector; i< (sector + nsector); i++){
+    _out(HDA_DATAREGS, (cylinder>>8) & 0xFF);
+    _out(HDA_DATAREGS +1, cylinder & 0xFF);
+    _out(HDA_DATAREGS +2, (i>>8) & 0xFF);
+    _out(HDA_DATAREGS +3, i & 0xFF);
+    _out(HDA_CMDREG, CMD_SEEK);
+    _sleep(HDA_IRQ);
+
+    _out(HDA_DATAREGS, (n>>8) & 0xFF);
+    _out(HDA_DATAREGS +1, n & 0xFF);
+    _out(HDA_DATAREGS +2, (value>>24) & 0xFF);
+    _out(HDA_DATAREGS +3, (value>>16) & 0xFF);
+    _out(HDA_DATAREGS +4, (value>>8) & 0xFF);
+    _out(HDA_DATAREGS +5, value & 0xFF);
+    _out(HDA_CMDREG, CMD_FORMAT);
+    _sleep(HDA_IRQ);
+  }
 }
 
 void chk_hda (void) {
