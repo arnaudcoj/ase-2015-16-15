@@ -63,12 +63,9 @@ void dmps(){
   
 }
 
-void dummy(){}
-
 int main(int argc, char **argv){
   unsigned int i;
-  unsigned char boeuf[SECTORSIZE];
-  const char * buff = "L'ASE, c'est trop cool!!!";
+  unsigned char buff[SECTORSIZE];
   unsigned int c, s;
   c = s = 0;
   
@@ -94,12 +91,9 @@ int main(int argc, char **argv){
     printf("no parameter given, assuming cylinder 0 & sector 0\n");
   }
 
-  read_sector(c,s,boeuf);
+  read_sector(c,s,buff);
   
-  dump(boeuf, SECTORSIZE, 1, 1);
-
-
-  write_sector(0, 0, (const unsigned char * )buff);
+  dump(buff, SECTORSIZE, 1, 1);
 
   /* and exit! */
   exit(EXIT_SUCCESS);

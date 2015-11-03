@@ -18,8 +18,7 @@ void read_sector(unsigned int cylinder, unsigned int sector, unsigned char *buff
 }
 
 void write_sector(unsigned int cylinder, unsigned int sector, const unsigned char *buffer) {
-  int i;
-  printf("to be implemented\n");
+  int i, length;
   _out(HDA_DATAREGS, (cylinder>>8) & 0xFF);
   _out(HDA_DATAREGS +1, cylinder & 0xFF);
   _out(HDA_DATAREGS +2, (sector>>8) & 0xFF);
@@ -32,7 +31,8 @@ void write_sector(unsigned int cylinder, unsigned int sector, const unsigned cha
     MASTERBUFFER[i] = buffer[i];*/
 
   /* v2 */
-  for(i = 0; i < strlen((const char * )buffer) && i<SECTORSIZE; i++)
+  length = strlen((const char * )buffer);
+  for(i = 0; i < length && i<SECTORSIZE; i++)
     MASTERBUFFER[i] = buffer[i];
 
   _out(HDA_DATAREGS, 0x00);

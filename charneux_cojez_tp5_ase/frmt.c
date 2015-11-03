@@ -23,8 +23,6 @@ void frmt(void){
     format_sector(i, 0, nsect, 0);
 }
 
-void dummy(){}
-
 int main(int argc, char **argv){
   unsigned int i;
   
@@ -34,7 +32,7 @@ int main(int argc, char **argv){
     exit(EXIT_FAILURE);
   }
 
-  /* Interreupt handlers */
+  /* Interrupt handlers */
   for(i=0; i<16; i++)
     IRQVECTOR[i] = empty_it;
 
@@ -43,7 +41,6 @@ int main(int argc, char **argv){
   chk_hda();
 
   frmt();
- /* format_sector(1,0,6,0xBB);*/
   
   /* and exit! */
   exit(EXIT_SUCCESS);
