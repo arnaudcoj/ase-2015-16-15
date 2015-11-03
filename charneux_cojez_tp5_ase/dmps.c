@@ -68,6 +68,7 @@ void dummy(){}
 int main(int argc, char **argv){
   unsigned int i;
   unsigned char boeuf[SECTORSIZE];
+  const char * buff = "L'ASE, c'est trop cool!!!";
   unsigned int c, s;
   c = s = 0;
   
@@ -96,6 +97,10 @@ int main(int argc, char **argv){
   read_sector(c,s,boeuf);
   
   dump(boeuf, SECTORSIZE, 1, 1);
+
+
+  write_sector(0, 0, (const unsigned char * )buff);
+
   /* and exit! */
   exit(EXIT_SUCCESS);
 }
