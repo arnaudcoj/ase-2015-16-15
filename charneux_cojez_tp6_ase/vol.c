@@ -1,5 +1,7 @@
 #include "vol.h"
 
+struct mbr_s mbr;
+
 int cylinder_of_bloc(unsigned int vol, unsigned int bloc) { 
   return mbr.mbr_vol[vol].vol_first_cylinder + (mbr.mbr_vol[vol].vol_first_sector + bloc) / HDA_MAXSECTOR;
 }
@@ -43,6 +45,7 @@ int load_mbr() {
   if(mbr.mbr_magic != MBR_MAGIC) {
     mbr.mbr_n_vol = 0;
     mbr.mbr_magic = MBR_MAGIC;
+    printf("entré dans if de load_mbr()\n");
     return 0;
   }
   return 1;
@@ -50,6 +53,6 @@ int load_mbr() {
 
 void save_mbr() {
   unsigned char buffer[SECTORSIZE];
-  memcpy(buffer, &mbr, sizeof mbr);
+  memcpy(buffer, (unsigned char*) &mbr, sizeof mbr);
   write_sector(0,0, buffer);
 }

@@ -4,7 +4,7 @@
 ROOTDIR=.
 
 CC	= gcc
-CFLAGS	= -Wall -ansi -pedantic -pthread -m32
+CFLAGS	= -Wall -ansi -pedantic -pthread -m32 -g
 LIBDIR  = -L$(ROOTDIR)/lib
 INCDIR  = -I$(ROOTDIR)/include
 LIBS    = -lhardware
@@ -12,7 +12,7 @@ LIBS    = -lhardware
 ###------------------------------
 ### Main targets 
 ###------------------------------------------------------------
-BINARIES= mkhd dmps frmt vm
+BINARIES= mkhd dmps frmt vm dvol mkvol
 OBJECTS	= $(addsuffix .o,\
 	  drive vol)
 
@@ -29,6 +29,11 @@ frmt: frmt.o drive.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
 vm: vm.o drive.o vol.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
+dvol: dvol.o drive.o vol.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
+mkvol: mkvol.o drive.o vol.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
+
 
 ###------------------------------
 ### #include dependences 
@@ -38,6 +43,8 @@ mkhd.o: mkhd.c
 dmps.o: dmps.c 
 frmt.o: frmt.c 
 vm.o: vm.c 
+dvol.o: dvol.c
+mkvol.o: mkvol.c
 
 drive.o: drive.c drive.h
 vol.o: vol.c drive.h vol.h

@@ -14,6 +14,7 @@
 void read_sector(unsigned int cylinder, unsigned int sector, unsigned char *buffer);
 void read_sector_n(unsigned int cylinder, unsigned int sector, unsigned char *buffer, unsigned int size);
 void write_sector(unsigned int cylinder, unsigned int sector, const unsigned char *buffer);
+void write_sector_n(unsigned int cylinder, unsigned int sector, const unsigned char *buffer, unsigned size);
 void format_sector(unsigned int cylinder, unsigned int sector, unsigned int nsector, unsigned int value);
 void chk_hda (void);
 void init_master(void);

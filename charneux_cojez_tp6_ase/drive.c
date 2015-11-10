@@ -24,7 +24,11 @@ void read_sector_n(unsigned int cylinder, unsigned int sector, unsigned char *bu
 }
 
 void write_sector(unsigned int cylinder, unsigned int sector, const unsigned char *buffer) {
-  int i, length;
+  write_sector_n(cylinder, sector, buffer, SECTORSIZE);
+}
+
+void write_sector_n(unsigned int cylinder, unsigned int sector, const unsigned char *buffer, unsigned size) {
+  int i;
   _out(HDA_DATAREGS, (cylinder>>8) & 0xFF);
   _out(HDA_DATAREGS +1, cylinder & 0xFF);
   _out(HDA_DATAREGS +2, (sector>>8) & 0xFF);
@@ -32,13 +36,7 @@ void write_sector(unsigned int cylinder, unsigned int sector, const unsigned cha
   _out(HDA_CMDREG, CMD_SEEK);
   _sleep(HDA_IRQ);
 
-  /*version avec caractere à la fin de buff*/
-  /*for(i = 0; i < SECTORSIZE; i++)
-    MASTERBUFFER[i] = buffer[i];*/
-
-  /* v2 */
-  length = strlen((const char * )buffer);
-  for(i = 0; i < length && i<SECTORSIZE; i++)
+  for(i = 0; i < size; i++)
     MASTERBUFFER[i] = buffer[i];
 
   _out(HDA_DATAREGS, 0x00);
@@ -46,6 +44,7 @@ void write_sector(unsigned int cylinder, unsigned int sector, const unsigned cha
   _out(HDA_CMDREG, CMD_WRITE);
   _sleep(HDA_IRQ);
 }
+
 
 void format_sector(unsigned int cylinder, unsigned int sector, unsigned int nsector, unsigned int value) {
   int i;
