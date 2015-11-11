@@ -5,40 +5,45 @@
 #include "config_hardware.h"
 
 struct mbr_s mbr;
+int verbose = 0;
 
 static void
 create(int s, int fc, int fs)
 {
   struct vol_s vol;
-  int i, prit = 0, tmpc, tmps;
+  int i, prit = 0, tmpc, tmps, bDebutAvantDebut, bFinAvantDebut, bDebutApresFin;
   assert(fc < HDA_MAXCYLINDER);
   assert(fs < HDA_MAXSECTOR);
   
   for(i = 0; i<mbr.mbr_n_vol; i++){  
     vol = mbr.mbr_vol[i];
-    tmpc = vol.vol_first_cylinder + vol.vol_n_bloc/(HDA_MAXSECTOR) +1;
-    tmps = vol.vol_first_sector + vol.vol_n_bloc;
+    
+    /* dernier cylindre utilisé par le volume */
+    tmpc = vol.vol_first_cylinder + (vol.vol_first_sector + vol.vol_n_bloc - 1)/HDA_MAXSECTOR ;
+    
+    /* dernier secteur utilisé par le volume */
+    tmps = (vol.vol_first_sector + vol.vol_n_bloc -1 ) % HDA_MAXSECTOR;
+    
+    if(verbose)
+        printf("debuts : %d, tmps : %d, debutc : %d,  tmpc : %d\n",vol.vol_first_sector, tmps, vol.vol_first_cylinder, tmpc);
 
-
-/*      FAUX    */
-/*    le debut est dans un secteur*/
-/*    if(fc >= vol.vol_first_cylinder && fc < tmpc && fs >= vol.vol_first_sector && fs < tmps){*/
-/*      prit = 1;*/
-/*    }*/
-/*    if((fc + s) >= vol.vol_first_cylinder && (fc + s) < tmpc && (fs) >= vol.vol_first_sector && (fs + s) < tmps){*/
-/*      prit = 1;*/
-/*    }*/
-    
-    
-    
-/*    verifier que le volume ne depasse pas sur dautres volumes et quun autre volume n'est pas dans le nouveau*/
-/*    ex */
-/*    Il y a 3 partition(s)*/
-/*    vol n°0, commence (0,12) volume : 10*/
-/*    vol n°1, commence (0,2) volume : 10*/
-/*    vol n°2, commence (0,1) volume : 10*/
-
-    
+    bDebutAvantDebut = (fc == vol.vol_first_cylinder && fs < vol.vol_first_sector)
+        || (fc < vol.vol_first_cylinder);
+        
+    bFinAvantDebut =  ((fc + (fs + s - 1)/HDA_MAXSECTOR) == vol.vol_first_cylinder && ((fs + s -1)%HDA_MAXSECTOR) < vol.vol_first_sector)
+        || ((fc + (fs + s - 1)/HDA_MAXSECTOR) < vol.vol_first_cylinder);
+     
+     if(verbose)    
+        printf("finfc : %d, finfs : %d\n", (fc + (fs +s - 1)/HDA_MAXSECTOR), ((fs + s -1)%HDA_MAXSECTOR));
+        
+    bDebutApresFin = (fc == tmpc && fs > tmps)
+        || (fc > tmpc);
+    if(verbose)    
+        printf("debutavantdebut : %d, finavantdebut : %d, debutapresfin : %d\n", bDebutAvantDebut, bFinAvantDebut, bDebutApresFin);
+    /* on test que soit le debut et la fin du nous volume soit avant le debut de l'ancien, soit apres la fin de l'ancien */
+    if(!((bDebutAvantDebut && bFinAvantDebut ) || bDebutApresFin)){
+      prit = 1;
+    }
   }
   if(prit == 1){
     printf("erreur, impossible de créer le volume\n");
@@ -69,6 +74,9 @@ main(int argc, char **argv)
       fs = atoi(argv[i+1]);
     } else if(!strcmp(argv[i], "-fc")){
       fc = atoi(argv[i+1]);
+    } else if(!strcmp(argv[i], "-v")){
+      verbose = 1;
+      i--;
     } else {
       printf("erreur d'arguments\n");
       exit(EXIT_FAILURE);
@@ -91,6 +99,11 @@ main(int argc, char **argv)
   chk_hda();
 
   load_mbr();
+  if(mbr.mbr_n_vol >= MAXVOL){
+    printf("nombre maximum de volume créé.\n");
+    exit(EXIT_FAILURE);
+  }
+  
   create(s, fc, fs);
   save_mbr();
   exit(EXIT_SUCCESS);
