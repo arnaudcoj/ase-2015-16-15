@@ -7,13 +7,26 @@
 struct mbr_s mbr;
 int verbose = 0;
 
-static void
+static int
 create(int s, int fc, int fs)
 {
   struct vol_s vol;
   int i, prit = 0, tmpc, tmps, bDebutAvantDebut, bFinAvantDebut, bDebutApresFin;
-  assert(fc < HDA_MAXCYLINDER);
-  assert(fs < HDA_MAXSECTOR);
+  if(0 >= fc || fc >= HDA_MAXCYLINDER) {
+    printf("incorrect value fc : 0 < fc < %d (max cylinder)\n", HDA_MAXCYLINDER);
+    return 1;
+  }
+  
+  if(0 >= fs || fs >= HDA_MAXSECTOR) {
+    printf("incorrect value fs : 0 < fc < %d (max sector)\n", HDA_MAXSECTOR);
+    return 1;
+  }
+
+  if(0 >= s || s >= HDA_MAXSECTOR) {
+    printf("incorrect value s : 0 < s < %d (max sector)\n", HDA_MAXSECTOR);
+    return 1;
+  }
+  
   
   for(i = 0; i<mbr.mbr_n_vol; i++){  
     vol = mbr.mbr_vol[i];
@@ -40,14 +53,14 @@ create(int s, int fc, int fs)
         || (fc > tmpc);
     if(verbose)    
         printf("debutavantdebut : %d, finavantdebut : %d, debutapresfin : %d\n", bDebutAvantDebut, bFinAvantDebut, bDebutApresFin);
-    /* on test que soit le debut et la fin du nous volume soit avant le debut de l'ancien, soit apres la fin de l'ancien */
+    /* on test que soit le debut et la fin du nouveau volume soit avant le debut de l'ancien, soit apres la fin de l'ancien */
     if(!((bDebutAvantDebut && bFinAvantDebut ) || bDebutApresFin)){
       prit = 1;
     }
   }
   if(prit == 1){
     printf("erreur, impossible de créer le volume\n");
-    return;
+    return 0;
   }
   vol.vol_first_cylinder = fc;
   vol.vol_first_sector = fs;
@@ -55,7 +68,8 @@ create(int s, int fc, int fs)
   vol.vol_type = VOL_TYPE_STD;
   mbr.mbr_vol[mbr.mbr_n_vol] = vol;
   mbr.mbr_n_vol ++;
-  
+
+  return 1;
 }
 
 static void empty_it() {
@@ -78,14 +92,14 @@ main(int argc, char **argv)
       verbose = 1;
       i--;
     } else {
-      printf("erreur d'arguments\n");
-      exit(EXIT_FAILURE);
+      printf("erreur d'arguments, usage :\n\t./mkvol -s <nb de secteurs> -fs <premier secteur> -fc <premier cylindre> [-v (verbose)]\n");
+      return EXIT_FAILURE;
     }
   }
   
   if(s == -1 || fs == -1 || fc == -1){
-    printf("erreur d'arguments\n");
-    exit(EXIT_FAILURE);
+    printf("erreur d'arguments, usage :\n\t./mkvol -s <nb de secteurs> -fs <premier secteur> -fc <premier cylindre> [-v (verbose)]\n");
+    return EXIT_FAILURE;
   }
   
   /* init master drive and load MBR */  
@@ -101,10 +115,12 @@ main(int argc, char **argv)
   load_mbr();
   if(mbr.mbr_n_vol >= MAXVOL){
     printf("nombre maximum de volume créé.\n");
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
+
+  if(!create(s, fc, fs))
+    return EXIT_FAILURE;
   
-  create(s, fc, fs);
   save_mbr();
-  exit(EXIT_SUCCESS);
+  return EXIT_SUCCESS;
 }
