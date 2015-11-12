@@ -22,8 +22,8 @@ create(int s, int fc, int fs)
     return 1;
   }
 
-  if(0 >= s || s >= HDA_MAXSECTOR) {
-    printf("incorrect value s : 0 < s < %d (max sector)\n", HDA_MAXSECTOR);
+  if(0 >= s || s >= HDA_MAXSECTOR*HDA_MAXCYLINDER) {
+    printf("incorrect value s : 0 < s < %d (max capacity)\n", HDA_MAXSECTOR*HDA_MAXCYLINDER);
     return 1;
   }
   
@@ -92,13 +92,13 @@ main(int argc, char **argv)
       verbose = 1;
       i--;
     } else {
-      printf("erreur d'arguments, usage :\n\t./mkvol -s <nb de secteurs> -fs <premier secteur> -fc <premier cylindre> [-v (verbose)]\n");
+      printf("erreur d'arguments, usage :\n\t./mkvol -fc <premier cylindre> -fs <premier secteur> -s <nb de secteurs> [-v (verbose)]\n");
       return EXIT_FAILURE;
     }
   }
   
   if(s == -1 || fs == -1 || fc == -1){
-    printf("erreur d'arguments, usage :\n\t./mkvol -s <nb de secteurs> -fs <premier secteur> -fc <premier cylindre> [-v (verbose)]\n");
+    printf("erreur d'arguments, usage :\n\t./mkvol -fc <premier cylindre> -fs <premier secteur> -s <nb de secteurs> [-v (verbose)]\n");
     return EXIT_FAILURE;
   }
   
