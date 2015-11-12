@@ -20,6 +20,16 @@ void read_bloc(unsigned int vol, unsigned int nbloc, unsigned char *buffer) {
   read_sector(c, s, buffer);
 }
 
+void read_bloc_n(unsigned int vol, unsigned int nbloc, unsigned char *buffer, unsigned int n) {
+  unsigned int c, s;
+  assert(vol < MAXVOL);
+  assert(nbloc < mbr.mbr_vol[vol].vol_n_bloc);
+  c = cylinder_of_bloc(vol, nbloc);
+  s = sector_of_bloc(vol, nbloc);
+  
+  read_sector_n(c, s, buffer, n);
+}
+
 void write_bloc(unsigned int vol, unsigned int nbloc, const unsigned char *buffer) {
   unsigned int c, s;
   assert(vol < MAXVOL);
@@ -28,6 +38,16 @@ void write_bloc(unsigned int vol, unsigned int nbloc, const unsigned char *buffe
   s = sector_of_bloc(vol, nbloc);
   
   write_sector(c, s, buffer);
+}
+
+void write_bloc_n(unsigned int vol, unsigned int nbloc, const unsigned char *buffer, unsigned int n) {
+  unsigned int c, s;
+  assert(vol < MAXVOL);
+  assert(nbloc < mbr.mbr_vol[vol].vol_n_bloc);
+  c = cylinder_of_bloc(vol, nbloc);
+  s = sector_of_bloc(vol, nbloc);
+  
+  write_sector_n(c, s, buffer, n);
 }
 
 void format_vol(unsigned int vol) {
@@ -59,38 +79,68 @@ void save_mbr() {
 
 
 void init_super(unsigned int vol) {
-  char *current_vol_str;
+  /*char *current_vol_str;
   int current_vol;
-  struct free_bloc_s fb;
   current_vol_str = getenv("$CURRENT_VOLUME");
   assert(current_vol_str);
 
-  current_vol = atoi(current_vol_str);
+  current_vol = atoi(current_vol_str);*/
   
+  struct free_bloc_s fb;
   super.super_first_free = 1;
-  super.super_n_free = mbr.mbr_vol[current_vol].vol_n_bloc -1;
+  super.super_n_free = mbr.mbr_vol[vol].vol_n_bloc -1;
   super.super_magic = SUPER_MAGIC;
-
-  write_bloc(SUPER_BLOC, sizeof super, (unsigned char *) &super);
+  super.super_vol = vol;
+  
+  write_bloc_n(vol, SUPER_BLOC, (unsigned char *) &super, sizeof super);
 
   fb.free_bloc_size = super.super_n_free;
-  fb.free_bloc_next = (unsigned int) NULL;
+  fb.free_bloc_next = (unsigned int) NULL_BLOC;
 
-  write_bloc(1, sizeof fb, (unsigned char *) &fb);
+  write_bloc_n(vol, 1, (unsigned char *) &fb, sizeof fb);
 }
 
 void load_super(unsigned int vol) {
-
+  read_bloc_n(vol, SUPER_BLOC, (unsigned char *) &super, sizeof super);
 }
 
 void save_super() {
-
+  write_bloc_n(super.super_vol, SUPER_BLOC, (unsigned char *) &super, sizeof super);
 }
 
 unsigned int new_bloc() {
-  return 0;
+  struct free_bloc_s fb;
+  unsigned int res;
+  res = NULL_BLOC;
+  
+  if(super.super_n_free == 0)
+    return NULL_BLOC;
+
+  read_bloc_n(super.super_vol, super.super_first_free, (unsigned char *) &fb, sizeof fb);
+
+    if(fb.free_bloc_size == 1) {
+      res = super.super_first_free;
+      super.super_n_free--;
+      super.super_first_free = fb.free_bloc_next;
+      return res;
+    }
+
+  res = super.super_first_free;
+  super.super_n_free--;
+  super.super_first_free++;
+  fb.free_bloc_size--;
+
+  write_bloc_n(super.super_vol, super.super_first_free, (unsigned char *) &fb, sizeof fb);
+  return res;
 }
 
 void free_bloc(unsigned int bloc) {
+    struct free_bloc_s fb;
+    fb.free_bloc_size = 1;
+    fb.free_bloc_next = super.super_first_free;
 
+    write_bloc_n(super.super_vol, bloc, (unsigned char *) &fb, sizeof fb);
+    
+    super.super_n_free++;
+    super.super_first_free = bloc;
 }

@@ -14,6 +14,7 @@
 #define SECTORSIZE 256
 #define MBR_MAGIC 0xABCDDCBA
 #define MAXVOL 5
+#define NULL_BLOC 0
 #define SUPER_BLOC 0
 #define SUPER_MAGIC 0xDEADBEEF
 
@@ -36,6 +37,7 @@ struct super_s {
   unsigned int super_first_free;
   unsigned int super_n_free;
   unsigned int super_magic;
+  unsigned int super_vol;
 };
 
 struct free_bloc_s {
