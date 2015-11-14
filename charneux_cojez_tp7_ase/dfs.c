@@ -5,29 +5,24 @@
 
 struct mbr_s mbr;
 struct super_s super;
-static void
-list()
-{
-  int i;
-  struct vol_s vol;
-  printf("Il y a %d partition(s)\n", mbr.mbr_n_vol);
-  for(i = 0; i< mbr.mbr_n_vol; i++){
-    vol = mbr.mbr_vol[i];
-    printf("vol n°%d, commence (%d,%d) volume : %d\n", i, vol.vol_first_cylinder, vol.vol_first_sector, vol.vol_n_bloc);
-  }
-}
+
 
 static void empty_it() {
   return;
 }
 
+void print_super(void) {
+  printf("Volume %d\n  Number of free blocs : %d\n  First free bloc's number : %d\n", super.super_vol, super.super_n_free, super.super_first_free);
+}
+
 int
 main(int argc, char **argv)
 {
-  int i;
+  int i, vol;
+
   /* init master drive and load MBR */  
   init_master();
-  
+
   /* Interrupt handlers */
   for(i=0; i<16; i++)
     IRQVECTOR[i] = empty_it;
@@ -37,8 +32,13 @@ main(int argc, char **argv)
   chk_hda();
 
   load_mbr();
-  list();
-  
-  /* make gcc -W happy */
-  exit(EXIT_SUCCESS);
+
+  vol = get_current_volume();
+
+  load_super(vol);
+
+  print_super();
+
+  return EXIT_SUCCESS;
 }
+

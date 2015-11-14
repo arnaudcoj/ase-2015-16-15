@@ -75,8 +75,12 @@ void chk_hda (void) {
 }
 
 void init_master(void) {
-  /* ugly */
-  if(init_hardware("hardware.ini") == 0) {
+  char *config_str;
+
+  config_str = getenv("HW_CONFIG");
+  assert(config_str);
+
+  if(init_hardware(config_str) == 0) {
     fprintf(stderr, "Error in hardware initialization\n");
     exit(EXIT_FAILURE);
   }

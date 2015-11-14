@@ -4,6 +4,8 @@
 #include "vol.h"
 
 struct mbr_s mbr;
+struct super_s super;
+
 
 static void empty_it() {
   return;
@@ -12,10 +14,11 @@ static void empty_it() {
 int
 main(int argc, char **argv)
 {
-  int i, s = 2, fc = 0, fs = 1;
+  int i, vol;
+
   /* init master drive and load MBR */  
   init_master();
-  
+
   /* Interrupt handlers */
   for(i=0; i<16; i++)
     IRQVECTOR[i] = empty_it;
@@ -26,4 +29,9 @@ main(int argc, char **argv)
 
   load_mbr();
 
+  vol = get_current_volume();
+
+  init_super(vol);
+
+  return EXIT_SUCCESS;
 }

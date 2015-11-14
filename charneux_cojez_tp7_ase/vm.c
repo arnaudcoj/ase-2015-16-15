@@ -24,6 +24,8 @@ struct _cmd {
   char *comment;
 };
 
+struct super_s super;
+
 static void list(struct _cmd *c);
 static void new(struct _cmd *c);
 static void del(struct _cmd *c);

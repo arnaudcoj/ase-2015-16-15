@@ -59,7 +59,7 @@ void format_vol(unsigned int vol) {
   
 }
 
-int load_mbr() {
+int load_mbr(void) {
   assert(SECTORSIZE >= sizeof (struct mbr_s));
   read_sector_n(0, 0, (unsigned char*) &mbr, sizeof mbr);
   if(mbr.mbr_magic != MBR_MAGIC) {
@@ -71,21 +71,14 @@ int load_mbr() {
   return 1;
 }
 
-void save_mbr() {
+void save_mbr(void) {
   unsigned char buffer[SECTORSIZE];
   memcpy(buffer, (unsigned char*) &mbr, sizeof mbr);
   write_sector(0,0, buffer);
 }
 
 
-void init_super(unsigned int vol) {
-  /*char *current_vol_str;
-  int current_vol;
-  current_vol_str = getenv("$CURRENT_VOLUME");
-  assert(current_vol_str);
-
-  current_vol = atoi(current_vol_str);*/
-  
+void init_super(unsigned int vol) {  
   struct free_bloc_s fb;
   super.super_first_free = 1;
   super.super_n_free = mbr.mbr_vol[vol].vol_n_bloc -1;
@@ -108,7 +101,7 @@ void save_super() {
   write_bloc_n(super.super_vol, SUPER_BLOC, (unsigned char *) &super, sizeof super);
 }
 
-unsigned int new_bloc() {
+unsigned int new_bloc(void) {
   struct free_bloc_s fb;
   unsigned int res;
   res = NULL_BLOC;
@@ -143,4 +136,13 @@ void free_bloc(unsigned int bloc) {
     
     super.super_n_free++;
     super.super_first_free = bloc;
+}
+
+unsigned int get_current_volume(void) {
+  char *vol_str;
+
+  vol_str = getenv("CURRENT_VOLUME");
+  assert(vol_str);
+
+  return atoi(vol_str);
 }

@@ -46,17 +46,17 @@ struct free_bloc_s {
 };
 
 extern struct mbr_s mbr;
-static struct super_s super;
+extern struct super_s super;
 
 void read_bloc(unsigned int vol, unsigned int nbloc, unsigned char *buffer);
 void write_bloc(unsigned int vol, unsigned int nbloc, const unsigned char *buffer);
 void format_vol(unsigned int vol);
-int load_mbr();
-void save_mbr();
+int load_mbr(void);
+void save_mbr(void);
 void init_super(unsigned int vol);
 void load_super(unsigned int vol);
-void save_super();
-unsigned int new_bloc();
+void save_super(void);
+unsigned int new_bloc(void);
 void free_bloc(unsigned int bloc);
-
+unsigned int get_current_volume(void);
 #endif
