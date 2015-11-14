@@ -59,4 +59,5 @@ void save_super(void);
 unsigned int new_bloc(void);
 void free_bloc(unsigned int bloc);
 unsigned int get_current_volume(void);
+unsigned int get_n_free_blocs(void);
 #endif

@@ -2,12 +2,20 @@
 
 struct mbr_s mbr;
 
-int cylinder_of_bloc(unsigned int vol, unsigned int bloc) { 
+static int cylinder_of_bloc(unsigned int vol, unsigned int bloc) { 
   return mbr.mbr_vol[vol].vol_first_cylinder + (mbr.mbr_vol[vol].vol_first_sector + bloc) / HDA_MAXSECTOR;
 }
 
-int sector_of_bloc(unsigned int vol, unsigned int bloc) {
+static int sector_of_bloc(unsigned int vol, unsigned int bloc) {
   return (mbr.mbr_vol[vol].vol_first_sector + bloc) % HDA_MAXSECTOR;
+}
+
+static void check_super() {  
+  if(super.super_magic != SUPER_MAGIC) {
+    printf("error : Super bloc is not initialized\n");
+    exit(EXIT_FAILURE);
+  }
+  return;
 }
 
 void read_bloc(unsigned int vol, unsigned int nbloc, unsigned char *buffer) {
@@ -94,16 +102,23 @@ void init_super(unsigned int vol) {
 }
 
 void load_super(unsigned int vol) {
+  check_super();
+  
   read_bloc_n(vol, SUPER_BLOC, (unsigned char *) &super, sizeof super);
 }
 
 void save_super() {
+  check_super();
+
   write_bloc_n(super.super_vol, SUPER_BLOC, (unsigned char *) &super, sizeof super);
 }
 
 unsigned int new_bloc(void) {
   struct free_bloc_s fb;
   unsigned int res;
+
+  check_super();
+  
   res = NULL_BLOC;
   
   if(super.super_n_free == 0)
@@ -128,14 +143,17 @@ unsigned int new_bloc(void) {
 }
 
 void free_bloc(unsigned int bloc) {
-    struct free_bloc_s fb;
-    fb.free_bloc_size = 1;
-    fb.free_bloc_next = super.super_first_free;
+  struct free_bloc_s fb;
 
-    write_bloc_n(super.super_vol, bloc, (unsigned char *) &fb, sizeof fb);
-    
-    super.super_n_free++;
-    super.super_first_free = bloc;
+  check_super();
+  
+  fb.free_bloc_size = 1;
+  fb.free_bloc_next = super.super_first_free;
+  
+  write_bloc_n(super.super_vol, bloc, (unsigned char *) &fb, sizeof fb);
+  
+  super.super_n_free++;
+  super.super_first_free = bloc;
 }
 
 unsigned int get_current_volume(void) {
@@ -145,4 +163,9 @@ unsigned int get_current_volume(void) {
   assert(vol_str);
 
   return atoi(vol_str);
+}
+
+unsigned int get_n_free_blocs(void) {
+ check_super();
+ return super.super_n_free;
 }

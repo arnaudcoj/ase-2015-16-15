@@ -12,7 +12,7 @@ LIBS    = -lhardware
 ###------------------------------
 ### Main targets 
 ###------------------------------------------------------------
-BINARIES= mkhd dmps frmt vm dvol mkvol mknfs dfs
+BINARIES= mkhd dmps frmt vm dvol mkvol mknfs dfs test_free_bloc
 OBJECTS	= $(addsuffix .o,\
 	  drive vol)
 
@@ -37,6 +37,8 @@ mknfs: mknfs.o drive.o vol.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
 dfs: dfs.o drive.o vol.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
+test_free_bloc: test_free_bloc.o drive.o vol.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
 
 
 ###------------------------------
@@ -59,7 +61,8 @@ vol.o: vol.c drive.h vol.h
 ###------------------------------
 ### Misc.
 ###------------------------------------------------------------
-.PHONY: clean realclean depend
+.PHONY: clean realclean depend setenv
+
 clean:
 	$(RM) *.o $(BINARIES)
 realclean: clean 
