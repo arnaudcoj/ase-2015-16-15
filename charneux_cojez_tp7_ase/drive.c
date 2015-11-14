@@ -74,8 +74,13 @@ void chk_hda (void) {
   assert( SECTORSIZE == sectorsize);
 }
 
+static void empty_it() {
+  return;
+}
+
 void init_master(void) {
   char *config_str;
+  int i;
 
   config_str = getenv("HW_CONFIG");
   assert(config_str);
@@ -84,4 +89,12 @@ void init_master(void) {
     fprintf(stderr, "Error in hardware initialization\n");
     exit(EXIT_FAILURE);
   }
+  
+  /* Interrupt handlers */
+  for(i=0; i<16; i++)
+    IRQVECTOR[i] = empty_it;
+
+  /* Allows all IT */
+  _mask(1);
+  chk_hda();
 }

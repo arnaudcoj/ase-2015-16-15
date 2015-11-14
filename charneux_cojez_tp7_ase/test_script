@@ -1,0 +1,15 @@
+#!/bin/bash
+
+make realclean
+
+make all
+
+export HW_CONFIG="hardware.ini"
+./mkvol -fc 3 -fs 7 -s 12
+./dvol
+
+export CURRENT_VOLUME="0"
+./mknfs
+./dfs
+
+./test_free_bloc

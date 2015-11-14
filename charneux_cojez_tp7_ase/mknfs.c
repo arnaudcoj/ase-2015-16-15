@@ -6,26 +6,15 @@
 struct mbr_s mbr;
 struct super_s super;
 
-
-static void empty_it() {
-  return;
-}
-
 int
 main(int argc, char **argv)
 {
-  int i, vol;
+  int vol;
 
+  printf("======Make New File System======\n");
+  
   /* init master drive and load MBR */  
   init_master();
-
-  /* Interrupt handlers */
-  for(i=0; i<16; i++)
-    IRQVECTOR[i] = empty_it;
-
-  /* Allows all IT */
-  _mask(1);
-  chk_hda();
 
   load_mbr();
 
@@ -33,5 +22,7 @@ main(int argc, char **argv)
 
   init_super(vol);
 
+  printf("Système de fichier initialisé avec succès\n");
+  
   return EXIT_SUCCESS;
 }

@@ -73,14 +73,12 @@ create(int s, int fc, int fs)
   return 1;
 }
 
-static void empty_it() {
-  return;
-}
-
 int
 main(int argc, char **argv)
 {
   int i, s = -1, fc = -1, fs = -1;
+
+  printf("======Make Volume======\n");
   
   for(i = 1; i < argc; i+=2){
     if(!strcmp(argv[i], "-s")){
@@ -105,15 +103,9 @@ main(int argc, char **argv)
   
   /* init master drive and load MBR */  
   init_master();
-  /* Interrupt handlers */
-  for(i=0; i<16; i++)
-    IRQVECTOR[i] = empty_it;
-
-  /* Allows all IT */
-  _mask(1);
-  chk_hda();
-
+  
   load_mbr();
+
   if(mbr.mbr_n_vol >= MAXVOL){
     printf("nombre maximum de volume créé.\n");
     return EXIT_FAILURE;
@@ -123,5 +115,8 @@ main(int argc, char **argv)
     return EXIT_FAILURE;
   
   save_mbr();
+  
+  printf("Volume créé avec succès\n");
+  
   return EXIT_SUCCESS;
 }

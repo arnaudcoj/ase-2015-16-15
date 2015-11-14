@@ -5,6 +5,7 @@
 
 struct mbr_s mbr;
 struct super_s super;
+
 static void
 list()
 {
@@ -17,28 +18,17 @@ list()
   }
 }
 
-static void empty_it() {
-  return;
-}
-
 int
 main(int argc, char **argv)
 {
-  int i;
+  printf("======Display Volume======\n");
+
   /* init master drive and load MBR */  
   init_master();
   
-  /* Interrupt handlers */
-  for(i=0; i<16; i++)
-    IRQVECTOR[i] = empty_it;
-
-  /* Allows all IT */
-  _mask(1);
-  chk_hda();
-
   load_mbr();
+  
   list();
   
-  /* make gcc -W happy */
-  exit(EXIT_SUCCESS);
+  return EXIT_SUCCESS;
 }
