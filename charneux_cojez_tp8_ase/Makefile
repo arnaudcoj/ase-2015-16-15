@@ -17,7 +17,7 @@ LIBS    = -lhardware
 ###------------------------------------------------------------
 BINARIES= if_pfile if_nfile if_cfile if_dfile
 OBJECTS	= $(addsuffix .o,\
-	  tools ifile mount)
+	  tools ifile mount drive vol)
 
 all: $(BINARIES) $(OBJECTS)
 
