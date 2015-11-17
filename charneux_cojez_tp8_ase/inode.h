@@ -17,6 +17,8 @@
  
 #define BLOC_SIZE       SECTOR_SIZE  
 #define DATA_BLOC_SIZE  BLOC_SIZE
+#define NBDIRECT        10  
+#define NBBLOCPARBLOC   2
 
 /* different kind of files */
 enum file_type_e {FILE_FILE, FILE_DIRECTORY, FILE_SPECIAL};
@@ -26,8 +28,11 @@ enum file_type_e {FILE_FILE, FILE_DIRECTORY, FILE_SPECIAL};
 #else
 /* inode */
 struct inode_s {
-    unsigned int ind_size;      /* in octets */
-#   error "You need to complete the struct inode_s structure with your own code"
+    unsigned int inode_size;      /* in octets */
+    enum file_type_e inode_type;
+    unsigned inode_direct[NBDIRECT];
+    unsigned inode_indirect;
+    unsigned inode_2Xindirect;
 };
 #endif
 
