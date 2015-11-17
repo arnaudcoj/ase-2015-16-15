@@ -1,6 +1,7 @@
 #include "vol.h"
 
 struct mbr_s mbr;
+struct super_s super;
 
 static int cylinder_of_bloc(unsigned int vol, unsigned int bloc) { 
   return mbr.mbr_vol[vol].vol_first_cylinder + (mbr.mbr_vol[vol].vol_first_sector + bloc) / HDA_MAXSECTOR;
@@ -121,8 +122,9 @@ void init_super(unsigned int vol) {
   write_bloc_n(vol, 1, (unsigned char *) &fb, sizeof fb);
 }
 
-void load_super(unsigned int vol) {  
+unsigned int load_super(unsigned int vol) {  
   read_bloc_n(vol, SUPER_BLOC, (unsigned char *) &super, sizeof super);
+  return super.super_magic == SUPER_MAGIC;
 }
 
 void save_super() {

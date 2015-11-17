@@ -10,6 +10,8 @@
 #ifndef _MOUNT_H_
 #define _MOUNT_H_
 
+unsigned int current_volume;
+
 /*  initialize hardware, mount the "current" volume
     configuration with the $HW_CONFIG and $CURRENT_VOLUME environment
     variables. 

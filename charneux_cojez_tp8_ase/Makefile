@@ -4,7 +4,7 @@
 ROOTDIR=/home/enseign/ASE
 
 CC	=  gcc
-CFLAGS	=  -Wall -Werror -ansi -pedantic
+CFLAGS	=  -Wall -Werror -ansi -pedantic -m32
 CFLAGS  += -std=iso9899:1999
 CFLAGS  += -g
 LIBDIR  =  $(ROOTDIR)/lib
@@ -17,7 +17,7 @@ LIBS    = -lhardware
 ###------------------------------------------------------------
 BINARIES= if_pfile if_nfile if_cfile if_dfile
 OBJECTS	= $(addsuffix .o,\
-	  tools ifile mount drive vol)
+	  tools ifile mount drive vol inode)
 
 all: $(BINARIES) $(OBJECTS)
 
@@ -31,7 +31,7 @@ if_dfile : if_dfile.o $(OBJECTS)
 if_pfile : if_pfile.o $(OBJECTS)
 
 % : %.o
-	$(CC) -o $@ $^ -L$(LIBDIR) $(LIBS)
+	$(CC) -m32 -o $@ $^ -L$(LIBDIR) $(LIBS)
 
 ###------------------------------
 ### #include dependences 

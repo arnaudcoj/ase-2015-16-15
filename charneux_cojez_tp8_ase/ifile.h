@@ -31,7 +31,6 @@ typedef struct file_desc_s file_desc_t;
 #  error "READ_EOF must be negative"
 #endif
 
-
 unsigned int create_ifile(enum file_type_e type); 
 int delete_ifile(unsigned int inumber);
 

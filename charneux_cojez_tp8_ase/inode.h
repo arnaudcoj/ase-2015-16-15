@@ -14,8 +14,9 @@
 #   include "hw_ini+sol.h"
 #endif
 #include "tools.h"
+#include "vol.h"
  
-#define BLOC_SIZE       SECTOR_SIZE  
+#define BLOC_SIZE       HDA_SECTORSIZE  
 #define DATA_BLOC_SIZE  BLOC_SIZE
 #define NBDIRECT        10  
 #define NBBLOCPARBLOC   2

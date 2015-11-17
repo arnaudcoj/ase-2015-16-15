@@ -20,7 +20,8 @@
 #   include "super+sol.h"
 #   include "vol+sol.h"
 #else
-#   error "You need to put here your own .h includes."
+/*   error "You need to put here your own .h includes."*/
+#   include "vol.h"
 #endif
 
 /* the file bloc number of a given character position in a file */  
@@ -68,7 +69,7 @@ open_ifile(file_desc_t *fd, unsigned int inumber)
     read_inode (inumber, &inode);    
     
     /* other trivial init */
-    fd->fds_size = inode.ind_size;
+    fd->fds_size = inode.inode_size;
     fd->fds_pos = 0;
 
     /* the buffer is full of zeros if the first bloc is zero, loaded
@@ -95,7 +96,7 @@ close_ifile(file_desc_t *fd)
     
     /* update the inode information (size) */
     read_inode(fd->fds_inumber, &inode);
-    inode.ind_size = fd->fds_size;
+    inode.inode_size = fd->fds_size;
     write_inode(fd->fds_inumber, &inode);
 }
 
