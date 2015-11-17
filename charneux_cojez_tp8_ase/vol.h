@@ -50,6 +50,7 @@ extern struct super_s super;
 
 void read_bloc(unsigned int vol, unsigned int nbloc, unsigned char *buffer);
 void write_bloc(unsigned int vol, unsigned int nbloc, const unsigned char *buffer);
+void format_blocs(unsigned int vol, unsigned int bloc, unsigned int nblocs, unsigned int val);
 void format_vol(unsigned int vol);
 int load_mbr(void);
 void save_mbr(void);
@@ -57,6 +58,7 @@ void init_super(unsigned int vol);
 void load_super(unsigned int vol);
 void save_super(void);
 unsigned int new_bloc(void);
+unsigned int new_bloc_zero(void);
 void free_bloc(unsigned int bloc);
 unsigned int get_current_volume(void);
 unsigned int get_n_free_blocs(void);

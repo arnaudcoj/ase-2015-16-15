@@ -66,6 +66,16 @@ void write_bloc_n(unsigned int vol, unsigned int nbloc, const unsigned char *buf
   write_sector_n(c, s, buffer, n);
 }
 
+void format_blocs(unsigned int vol, unsigned int bloc, unsigned int nblocs, unsigned int val) {
+  unsigned int c, s;
+  assert(vol < MAXVOL);
+  assert(bloc < mbr.mbr_vol[vol].vol_n_bloc);
+  c = cylinder_of_bloc(vol, bloc);
+  s = sector_of_bloc(vol, bloc);
+  
+  format_sector(c, s, nblocs, val);
+}
+
 void format_vol(unsigned int vol) {
   unsigned int c, s;
   assert(vol < MAXVOL);
@@ -148,6 +158,13 @@ unsigned int new_bloc(void) {
 
   write_bloc_n(super.super_vol, super.super_first_free, (unsigned char *) &fb, sizeof fb);
   return res;
+}
+
+unsigned int new_bloc_zero(void) {
+  unsigned int bloc = new_bloc();
+  if(bloc != NULL_BLOC)
+    format_blocs(super.super_vol, bloc, 1, 0);
+  return bloc;
 }
 
 void free_bloc(unsigned int bloc) {
