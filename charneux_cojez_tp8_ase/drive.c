@@ -6,7 +6,7 @@ void read_sector(unsigned int cylinder, unsigned int sector, unsigned char *buff
 
 void read_sector_n(unsigned int cylinder, unsigned int sector, unsigned char *buffer, unsigned int size) {
   int i;
-  assert(size < SECTORSIZE);
+  assert(size <= SECTORSIZE);
   _out(HDA_DATAREGS, (cylinder>>8) & 0xFF);
   _out(HDA_DATAREGS +1,cylinder & 0xFF);
   _out(HDA_DATAREGS +2, (sector>>8) & 0xFF);

@@ -58,7 +58,9 @@ tools.o: tools.c tools.h
 .PHONY: clean realclean depend
 clean:
 	$(RM) *.o $(BINARIES)
-realclean: clean
+realclean: clean diskclean
+
+diskclean:
 	$(RM) vdiskA.bin vdiskB.bin
 depend : 
 	$(CC) $(CFLAGS) -MM $(INCDIR) *.c 
