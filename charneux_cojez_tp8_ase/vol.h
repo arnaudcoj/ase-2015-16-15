@@ -11,7 +11,7 @@
 #include "hardware.h"
 #include "drive.h"
 
-#define SECTORSIZE 256
+#define SECTORSIZE HDA_SECTORSIZE
 #define MBR_MAGIC 0xABCDDCBA
 #define MAXVOL 5
 #define NULL_BLOC 0

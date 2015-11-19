@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "config_hardware.h"
 #include "hardware.h"
-#define SECTORSIZE 256
+#define SECTORSIZE HDA_SECTORSIZE
 
 void read_sector(unsigned int cylinder, unsigned int sector, unsigned char *buffer);
 void read_sector_n(unsigned int cylinder, unsigned int sector, unsigned char *buffer, unsigned int size);

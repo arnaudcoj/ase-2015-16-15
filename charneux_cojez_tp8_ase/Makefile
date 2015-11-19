@@ -1,7 +1,7 @@
 # $Id: Makefile,v 1.2 2009/11/17 10:02:37 marquet Exp $
 ##############################################################################
 
-ROOTDIR=/home/enseign/ASE
+ROOTDIR=./
 
 CC	=  gcc
 CFLAGS	=  -Wall -Werror -ansi -pedantic -m32
@@ -15,7 +15,7 @@ LIBS    = -lhardware
 ###------------------------------
 ### Main targets 
 ###------------------------------------------------------------
-BINARIES= if_pfile if_nfile if_cfile if_dfile
+BINARIES= if_pfile if_nfile if_cfile if_dfile mkvol dvol mknfs dfs
 OBJECTS	= $(addsuffix .o,\
 	  tools ifile mount drive vol inode)
 
@@ -29,9 +29,13 @@ if_cfile : if_cfile.o $(OBJECTS)
 if_nfile : if_nfile.o $(OBJECTS)
 if_dfile : if_dfile.o $(OBJECTS)
 if_pfile : if_pfile.o $(OBJECTS)
+mkvol : mkvol.o vol.o drive.o
+dvol : dvol.o vol.o drive.o
+mknfs : mknfs.o vol.o drive.o
+dfs : dfs.o vol.o drive.o
 
 % : %.o
-	$(CC) -m32 -o $@ $^ -L$(LIBDIR) $(LIBS)
+	$(CC) -m32 -lpthread -o $@ $^ -L$(LIBDIR) $(LIBS)
 
 ###------------------------------
 ### #include dependences 
@@ -54,7 +58,8 @@ tools.o: tools.c tools.h
 .PHONY: clean realclean depend
 clean:
 	$(RM) *.o $(BINARIES)
-realclean: clean 
+realclean: clean
+	$(RM) vdiskA.bin vdiskB.bin
 depend : 
 	$(CC) $(CFLAGS) -MM $(INCDIR) *.c 
 

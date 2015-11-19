@@ -124,7 +124,7 @@ void init_super(unsigned int vol) {
 
 unsigned int load_super(unsigned int vol) {  
   read_bloc_n(vol, SUPER_BLOC, (unsigned char *) &super, sizeof super);
-  return super.super_magic == SUPER_MAGIC;
+  return super.super_magic != SUPER_MAGIC;
 }
 
 void save_super() {
