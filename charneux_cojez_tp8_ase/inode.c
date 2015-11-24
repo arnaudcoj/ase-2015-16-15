@@ -60,7 +60,7 @@ int delete_inode(unsigned int inumber){
 
 unsigned int vbloc_of_fbloc(unsigned int inumber, unsigned int fbloc, bool_t do_allocate){
     struct inode_s inode;
-    unsigned bloc[NBBLOCPARBLOC];
+    unsigned bloc[NBBLOCPARBLOC], i;
     read_inode(inumber, &inode);
     if(fbloc < NBDIRECT){
       if(do_allocate){
@@ -84,7 +84,7 @@ unsigned int vbloc_of_fbloc(unsigned int inumber, unsigned int fbloc, bool_t do_
     if(do_allocate){
       if(bloc[fbloc] == 0){
         bloc[fbloc] = new_bloc_zero();
-        write_bloc_n(current_volume, bloc[fbloc],(unsigned char *) &bloc, NBBLOCPARBLOC * sizeof(unsigned));
+        write_bloc_n(current_volume, inode.inode_indirect,(unsigned char *) &bloc, NBBLOCPARBLOC * sizeof(unsigned));
       }
     }
     return bloc[fbloc];

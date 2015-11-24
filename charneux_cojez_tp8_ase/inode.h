@@ -18,7 +18,7 @@
  
 #define BLOC_SIZE       HDA_SECTORSIZE  
 #define DATA_BLOC_SIZE  BLOC_SIZE
-#define NBDIRECT        10 
+#define NBDIRECT        1 
 #define NBBLOCPARBLOC   20
 
 /* different kind of files */
