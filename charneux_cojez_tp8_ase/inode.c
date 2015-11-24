@@ -33,8 +33,8 @@ void free_blocs(unsigned table[], unsigned size){
 
 int delete_inode(unsigned int inumber){
     struct inode_s inode;
-     unsigned bloc[NBBLOCPARBLOC];/*, bbloc[NBBLOCPARBLOC];
-       unsigned i;*/
+     unsigned bloc[NBBLOCPARBLOC], bbloc[NBBLOCPARBLOC];
+       unsigned i;
     read_inode(inumber, &inode);
     free_bloc(inumber);
     free_blocs(inode.inode_direct, NBDIRECT);
@@ -43,7 +43,7 @@ int delete_inode(unsigned int inumber){
         free_blocs(bloc, NBBLOCPARBLOC);
         free_bloc(inode.inode_indirect);
     }
-    /*
+    
     if(inode.inode_2Xindirect != 0){
         read_bloc_n(current_volume, inode.inode_2Xindirect, (unsigned char *) &bbloc, NBBLOCPARBLOC * sizeof(unsigned));
         for(i=0; i<NBBLOCPARBLOC; i++){
@@ -54,13 +54,13 @@ int delete_inode(unsigned int inumber){
             } 
         }
         free_bloc(inode.inode_2Xindirect);
-	}*/
+	}
     return EXIT_SUCCESS;
 }
 
 unsigned int vbloc_of_fbloc(unsigned int inumber, unsigned int fbloc, bool_t do_allocate){
     struct inode_s inode;
-    unsigned bloc[NBBLOCPARBLOC], i;
+    unsigned bloc[NBBLOCPARBLOC], bbloc[NBBLOCPARBLOC], n, nn;
     read_inode(inumber, &inode);
     if(fbloc < NBDIRECT){
       if(do_allocate){
@@ -91,6 +91,28 @@ unsigned int vbloc_of_fbloc(unsigned int inumber, unsigned int fbloc, bool_t do_
   }   
   
   
+  fbloc -= NBBLOCPARBLOC;
+  if(fbloc < NBBLOCPARBLOC * NBBLOCPARBLOC){
+    if(inode.inode_2Xindirect == 0){
+      if(do_allocate){
+          inode.inode_2Xindirect = new_bloc_zero();
+          write_inode(inumber, &inode);
+      }
+    }
+    read_bloc_n(current_volume, inode.inode_2Xindirect,(unsigned char *)&bloc, NBBLOCPARBLOC * sizeof(unsigned));
+    n = fbloc / NBBLOCPARBLOC;
+    if(bloc[n] == 0){
+       bloc[n] = new_bloc_zero();
+       write_bloc_n(current_volume, inode.inode_2Xindirect,(unsigned char *) &bloc, NBBLOCPARBLOC * sizeof(unsigned));
+    }
+    read_bloc_n(current_volume, bloc[fbloc],(unsigned char *)&bbloc, NBBLOCPARBLOC * sizeof(unsigned));
+    nn = fbloc % NBBLOCPARBLOC;
+    if(bbloc[nn] == 0){
+      bbloc[nn] = new_bloc_zero();
+      write_bloc_n(current_volume, bloc[n],(unsigned char *) &bbloc, NBBLOCPARBLOC * sizeof(unsigned));
+    }
+    return bbloc[nn];
+  }
     
     
     
