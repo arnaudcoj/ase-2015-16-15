@@ -101,15 +101,19 @@ unsigned int vbloc_of_fbloc(unsigned int inumber, unsigned int fbloc, bool_t do_
     }
     read_bloc_n(current_volume, inode.inode_2Xindirect,(unsigned char *)&bloc, NBBLOCPARBLOC * sizeof(unsigned));
     n = fbloc / NBBLOCPARBLOC;
-    if(bloc[n] == 0){
-       bloc[n] = new_bloc_zero();
-       write_bloc_n(current_volume, inode.inode_2Xindirect,(unsigned char *) &bloc, NBBLOCPARBLOC * sizeof(unsigned));
+    if(do_allocate){
+      if(bloc[n] == 0){
+         bloc[n] = new_bloc_zero();
+         write_bloc_n(current_volume, inode.inode_2Xindirect,(unsigned char *) &bloc, NBBLOCPARBLOC * sizeof(unsigned));
+      }
     }
     read_bloc_n(current_volume, bloc[fbloc],(unsigned char *)&bbloc, NBBLOCPARBLOC * sizeof(unsigned));
     nn = fbloc % NBBLOCPARBLOC;
     if(bbloc[nn] == 0){
-      bbloc[nn] = new_bloc_zero();
-      write_bloc_n(current_volume, bloc[n],(unsigned char *) &bbloc, NBBLOCPARBLOC * sizeof(unsigned));
+      if(do_allocate){
+        bbloc[nn] = new_bloc_zero();
+        write_bloc_n(current_volume, bloc[n],(unsigned char *) &bbloc, NBBLOCPARBLOC * sizeof(unsigned));
+      }
     }
     return bbloc[nn];
   }
