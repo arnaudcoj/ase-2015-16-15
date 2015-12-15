@@ -1,0 +1,4 @@
+matrix.o: matrix.c matrix.h
+mmu_manager.o: mmu_manager.c
+oracle.o: oracle.c hw_config.h matrix.h
+user_process.o: user_process.c hw_config.h matrix.h

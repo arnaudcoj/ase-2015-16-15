@@ -1,10 +1,10 @@
 # $Id: Makefile 102 2009-11-03 13:14:39Z simon_duquennoy $
 ##############################################################################
-ROOTDIR = /home/enseign/ASE/
+ROOTDIR = .
 LIBNAME = hardware
 
 CC	= gcc
-CFLAGS	= -Wall -ansi -pedantic
+CFLAGS	= -Wall -ansi -pedantic -m32 -lpthread
 LIBDIR  = $(ROOTDIR)
 INCDIR  = -I$(ROOTDIR)/include
 LIBS    = -L$(ROOTDIR)/lib -l$(LIBNAME)
