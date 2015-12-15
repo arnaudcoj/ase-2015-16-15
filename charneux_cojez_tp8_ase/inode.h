@@ -18,8 +18,8 @@
  
 #define BLOC_SIZE       HDA_SECTORSIZE  
 #define DATA_BLOC_SIZE  BLOC_SIZE
-#define NBDIRECT        1 
-#define NBBLOCPARBLOC   4
+#define NBDIRECT        5 
+#define NBBLOCPARBLOC   10
 
 /* different kind of files */
 enum file_type_e {FILE_FILE, FILE_DIRECTORY, FILE_SPECIAL};
@@ -33,7 +33,6 @@ struct inode_s {
     enum file_type_e inode_type;
     unsigned inode_direct[NBDIRECT];
     unsigned inode_indirect;
-    unsigned inode_2Xindirect;
 };
 #endif
 
