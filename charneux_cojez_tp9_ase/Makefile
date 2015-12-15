@@ -15,9 +15,9 @@ LIBS    = -lhardware
 ###------------------------------
 ### Main targets
 ###------------------------------------------------------------
-BINARIES= if_pfile if_nfile if_cfile if_dfile mkvol dvol mknfs dfs
+BINARIES= mi_kernel 
 OBJECTS	= $(addsuffix .o,\
-	  tools ifile mount drive vol inode mem)
+	  mi_kernel mi_user)
 
 all: $(BINARIES) $(OBJECTS)
 
@@ -25,14 +25,7 @@ all: $(BINARIES) $(OBJECTS)
 ###------------------------------
 ### Binaries
 ###------------------------------------------------------------
-if_cfile : if_cfile.o $(OBJECTS)
-if_nfile : if_nfile.o $(OBJECTS)
-if_dfile : if_dfile.o $(OBJECTS)
-if_pfile : if_pfile.o $(OBJECTS)
-mkvol : mkvol.o vol.o drive.o
-dvol : dvol.o vol.o drive.o
-mknfs : mknfs.o vol.o drive.o
-dfs : dfs.o vol.o drive.o
+mi_kernel : $(OBJECTS)
 
 % : %.o
 	$(CC) -m32 -lpthread -o $@ $^ -L$(LIBDIR) $(LIBS)
@@ -41,13 +34,11 @@ dfs : dfs.o vol.o drive.o
 ### #include dependences
 ###------------------------------------------------------------
 # you may fill these lines with "make depend"
-if_cfile.o: if_cfile.c ifile.h inode.h tools.h mount.h
-if_dfile.o: if_dfile.c ifile.h inode.h tools.h mount.h
-if_nfile.o: if_nfile.c ifile.h inode.h tools.h mount.h
-if_pfile.o: if_pfile.c ifile.h inode.h tools.h mount.h
-ifile.o: ifile.c inode.h tools.h ifile.h
-mount.o: mount.c config.h tools.h
-tools.o: tools.c tools.h
+
+mi_kernel.o: mi_kernel.c
+	$(CC) $(CFLAGS) -c $<
+mi_user.o: mi_user.c
+	$(CC) $(CFLAGS) -c $<
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<

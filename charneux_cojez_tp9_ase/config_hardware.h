@@ -17,7 +17,7 @@
 #define MMU_IRQ 13
 #define MMU_FAULT_ADDR 0xCD
 #define TLB_ADD_ENTRY 0xCE
-
+#define MMU_CMD 0x66
 
 
 

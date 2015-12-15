@@ -1,8 +1,12 @@
-#ifndef MEM_H
-#define MEM_H
+#ifndef MI_KERNEL_H
+#define MI_KERNEL_H
 
 #include "config_hardware.h"
+#include "mi_user.h"
 #include <hardware.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 static unsigned current_ctx;
 
@@ -16,4 +20,4 @@ struct tlbe_s {
 
 void mmu_handler(void);
 
-#endif //MEM_H
+#endif //MI_KERNEL_H
