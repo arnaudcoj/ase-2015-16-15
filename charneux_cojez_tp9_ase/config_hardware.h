@@ -12,32 +12,11 @@
 #define VM_SIZE VM_PAGES*PAGE_SIZE
 #define PM_PAGES 256
 #define PM_SIZE PM_PAGES*PAGE_SIZE
-#define N 512
+#define N 12
 #define MMU_ENABLE 1
 #define MMU_IRQ 13
 #define MMU_FAULT_ADDR 0xCD
 #define TLB_ADD_ENTRY 0xCE
 #define MMU_CMD 0x66
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif

@@ -7,8 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "mi_syscall.h"
 
-static unsigned current_ctx;
+static unsigned current_process = 0;
 
 struct tlbe_s {
   unsigned int tlb_rfu:8;
@@ -18,6 +19,8 @@ struct tlbe_s {
   unsigned int tlb_valid:1;
 };
 
-void mmu_handler(void);
+struct tlbe_s tlbe;
+
+void init_kernel(void);
 
 #endif //MI_KERNEL_H
