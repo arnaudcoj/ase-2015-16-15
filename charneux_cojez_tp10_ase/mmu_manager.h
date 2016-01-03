@@ -1,15 +1,12 @@
-#ifndef MI_KERNEL_H
-#define MI_KERNEL_H
+#ifndef MMU_MANAGER_H
+#define MMU_MANAGER_H
 
-#include "config_hardware.h"
-#include "mi_user.h"
-#include <hardware.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "mi_syscall.h"
-
-static unsigned current_process = 0;
+#include <hardware.h>
+#include "hw_config.h"
+#include "swap.c"
 
 struct tlbe_s {
   unsigned int tlb_rfu:8;
@@ -20,7 +17,8 @@ struct tlbe_s {
 };
 
 struct tlbe_s tlbe;
+int current_vpage = -1;
 
-void init_kernel(void);
+extern void user_process();
 
-#endif //MI_KERNEL_H
+#endif

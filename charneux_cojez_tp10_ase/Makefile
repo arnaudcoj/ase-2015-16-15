@@ -4,7 +4,7 @@ ROOTDIR = .
 LIBNAME = hardware
 
 CC	= gcc
-CFLAGS	= -Wall -ansi -pedantic -m32 -lpthread
+CFLAGS	= -Wall -ansi -pedantic -m32 -lpthread -g
 LIBDIR  = $(ROOTDIR)
 INCDIR  = -I$(ROOTDIR)/include
 LIBS    = -L$(ROOTDIR)/lib -l$(LIBNAME)
@@ -37,8 +37,12 @@ oracle: oracle.o matrix.o
 ###------------------------------
 ### Misc.
 ###------------------------------------------------------------
-.PHONY: clean realclean depend
+.PHONY: clean realclean depend execute
+
+execute: $(BINARIES)
+	./mmu_manager | tee /dev/stderr | ./oracle
+
 clean:
-	$(RM) *.o $(BINARIES) Makefile.depends
+	$(RM) *.o $(BINARIES) Makefile.depends *~
 realclean: clean 
-	$(RM) vdiskA.bin vdiskB.bin
+	$(RM) vdiskA.bin vdiskB.bin swap_file
