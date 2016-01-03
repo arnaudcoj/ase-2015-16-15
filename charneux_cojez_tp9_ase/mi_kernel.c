@@ -1,4 +1,4 @@
-#include "mi_kernel.h"
+uio#include "mi_kernel.h"
 
 static void 
 switch_to_process0(void) 
@@ -33,7 +33,7 @@ static void mmu_handler(void) {
   int ppage = ppage_of_vaddr(current_process, vaddr);
   if(ppage == -1) {
     fprintf(stderr, "Erreur de segmentation, adresse : %p\n", (void*) _in(MMU_FAULT_ADDR));
-    exit(EXIT_FAILURE); /* pas sur */
+    exit(EXIT_FAILURE);
   }
   tlbe.tlb_ppage = ppage;
   tlbe.tlb_vpage = vpage;
