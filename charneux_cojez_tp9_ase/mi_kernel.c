@@ -1,4 +1,4 @@
-uio#include "mi_kernel.h"
+#include "mi_kernel.h"
 
 static void 
 switch_to_process0(void) 

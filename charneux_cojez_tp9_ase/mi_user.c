@@ -34,8 +34,8 @@ void init_user(void) {
   printf("Resultat (somme des valeurs en mémoire)  du processus 1 : %d\n",r1);
 
   if(r0 * 3 == r1)
-    printf("%u * 3 == %u \n", r0, r1);
+    printf("%u * 3 == %u [ok]\n", r0, r1);
   else
-    printf("%u * 3 != %u \n", r0, r1);
+    printf("%u * 3 != %u [ko]\n", r0, r1);
   
 }

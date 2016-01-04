@@ -1,0 +1,4 @@
+#!/bin/sh
+make
+echo "Starting mi_kernel"
+./mi_kernel
