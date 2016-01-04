@@ -6,15 +6,12 @@
 
 extern void *virtual_memory;
 
-#define MATRIX_OP MATRIX_MUL
-/*#define MATRIX_OP MATRIX_MUL*/
-
-void user_process() {
+void user_process(int operation) {
   unsigned short timestamp = (unsigned)time(NULL);
   matrix *matrix1 = (matrix*)virtual_memory;
   matrix *matrix2 = ((matrix*)virtual_memory) + 1;
   matrix *matrix3 = ((matrix*)virtual_memory) + 2;
-	
+  
   srand(timestamp);
 
   printf("[Starting user process]\n");
@@ -28,17 +25,18 @@ void user_process() {
   printf("initializing matrices\n");
   matrix_init(matrix1);
   matrix_init(matrix2);
-#if MATRIX_OP == MATRIX_ADD
-  /* add matrices */
-  printf("adding VM matrices ");fflush(stdout);
-  matrix_add(matrix3, matrix1, matrix2);
-#elif MATRIX_OP == MATRIX_MUL
-  /* multiply matrices */
-  printf("multiplying matrices ");fflush(stdout);
-  matrix_mult(matrix3, matrix1, matrix2);
-#endif
+  if (operation == MATRIX_ADD) {
+    /* add matrices */
+    printf("adding VM matrices ");fflush(stdout);
+    matrix_add(matrix3, matrix1, matrix2);
+  }
+  else if(operation == MATRIX_MUL) {
+    /* multiply matrices */
+    printf("multiplying matrices ");fflush(stdout);
+    matrix_mult(matrix3, matrix1, matrix2);
+  }
   printf("timestamp: 0x%04x, ", timestamp);
-  printf("operation: %d, ", MATRIX_OP);
+  printf("operation: %d, ", operation);
   printf("checksum: 0x%04x\n", matrix_checksum(matrix3));
 }
 

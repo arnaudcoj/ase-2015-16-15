@@ -1,0 +1,6 @@
+#!/bin/sh
+make
+echo -e "\n/// 1 page Handler and Addition ///"
+./mmu_manager 0 0 | tee /dev/stderr | ./oracle
+echo -e "\n/// 1 page Handler and Multiplication ///"
+./mmu_manager 0 1 | tee /dev/stderr | ./oracle

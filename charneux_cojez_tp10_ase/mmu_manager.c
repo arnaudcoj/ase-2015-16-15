@@ -89,7 +89,7 @@ static void init_vm_map(struct vmapping_s vm_map[], int map_length) {
   return;
 }
 
-static void init_kernel(void) {
+static void init_kernel(int handler) {
   if(init_hardware("hardware.ini") == 0) {
     fprintf(stderr, "Error in hardware initialization\n");
     exit(EXIT_FAILURE);
@@ -99,8 +99,11 @@ static void init_kernel(void) {
     fprintf(stderr, "Error in swap initialization\n");
     exit(EXIT_FAILURE);
   }
-  
-  IRQVECTOR[MMU_IRQ] = mmu_handler2;
+
+  if(handler == MMU_HANDLER_SIMPLE)
+    IRQVECTOR[MMU_IRQ] = mmu_handler1;
+  else if(handler == MMU_HANDLER_COMPLETE)
+    IRQVECTOR[MMU_IRQ] = mmu_handler2;
 
   init_vm_map(vm_mapping, VM_PAGES);
   init_pm_map(pm_mapping, PM_PAGES);
@@ -110,9 +113,35 @@ static void init_kernel(void) {
   return;
 }
 
+static void usage(void) {
+  fprintf(stderr, "usage : ./mmu_manager <handler> <operation>\n\thandler :\n\t\t 0. 1 page (defaut)\n\t\t 1. Toute la memoire\n \toperation :\n\t\t 0. addition (defaut)\n\t\t 1. multiplication\n");
+}
+
 int main(int argc, char **argv) {
-  init_kernel();
-  user_process();
+  /* Par défaut handler avec 1 page et operation = addition */
+  int handler = 0;
+  int operation = 0;
+  int arg1, arg2;
+
+  if(argc == 3) {
+    arg1 = atoi(argv[1]);
+    if(arg1 == MMU_HANDLER_SIMPLE || arg1 == MMU_HANDLER_COMPLETE) {
+      handler = arg1;
+
+      arg2 = atoi(argv[2]);
+      if(arg2 == MATRIX_ADD || arg2 == MATRIX_MUL)
+	operation = arg2;
+      else
+	usage();
+    }
+    else
+      usage();
+  }
+  else 
+    usage();
+    
+  init_kernel(handler);
+  user_process(operation);
 
   return EXIT_SUCCESS;
 }

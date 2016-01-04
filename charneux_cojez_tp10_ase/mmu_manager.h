@@ -7,6 +7,10 @@
 #include <hardware.h>
 #include "hw_config.h"
 #include "swap.c"
+#include "matrix.h"
+
+#define MMU_HANDLER_SIMPLE 0
+#define MMU_HANDLER_COMPLETE 1
 
 struct tlbe_s {
   unsigned int tlb_rfu:8;
