@@ -9,7 +9,7 @@ pingpong: switch.o hw.o pingpong.c
 pingpongpang: switch.o hw.o pingpongpang.c  
 	$(CC) $(CFLAGS) -o $@  $^
 
-switch.o: hw.o switch.c
+switch.o: switch.c
 	$(CC) $(CFLAGS) -c $^
 
 hw.o: hw.c

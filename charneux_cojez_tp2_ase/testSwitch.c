@@ -48,6 +48,6 @@ void f2(void *args)
 
 void f3(void *args)
 {
-    printf("Entrée dans ctx3") ;
+    printf("Entrée dans ctx3\n") ;
     printf("fin ctx\n");
 } 
