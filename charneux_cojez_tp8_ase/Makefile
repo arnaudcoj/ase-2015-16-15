@@ -35,7 +35,7 @@ mknfs : mknfs.o vol.o drive.o
 dfs : dfs.o vol.o drive.o
 
 % : %.o
-	$(CC) -m32 -lpthread -o $@ $^ -L$(LIBDIR) $(LIBS)
+	$(CC) -m32 -pthread -o $@ $^ -L$(LIBDIR) $(LIBS)
 
 ###------------------------------
 ### #include dependences 
