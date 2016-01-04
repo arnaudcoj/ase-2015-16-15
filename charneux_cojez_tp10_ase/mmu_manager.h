@@ -16,8 +16,26 @@ struct tlbe_s {
   unsigned int tlb_valid:1;
 };
 
+struct pmapping_s {
+	unsigned pm_vpage : 12;
+	unsigned pm_allocated : 1;
+};
+
+struct vmapping_s {
+	unsigned vm_ppage : 8;
+	unsigned vm_allocated : 1;
+};
+
+
 struct tlbe_s tlbe;
+
+/* for mmu_handler1 */
 int current_vpage = -1;
+
+/* for mmu_handler2 */
+int rr_ppage = 1;
+struct pmapping_s pm_mapping[PM_PAGES];
+struct vmapping_s vm_mapping[VM_PAGES];
 
 extern void user_process();
 

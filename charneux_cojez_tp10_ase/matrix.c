@@ -3,10 +3,8 @@
 #include "matrix.h"
 
 static void log_state(int i, int n) {
-  if(n && i % n == n - 1) {
-    printf(".");
+  printf("%d", (i*100) / MATRIX_SIZE);
     fflush(stdout);
-  }
 }
 
 void matrix_init(matrix *m) {
